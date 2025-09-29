@@ -27,6 +27,25 @@ get_access_token() {
     echo "$access_token"
 }
 
+# Function to get device status
+get_device_status() {
+    local device_id=$1
+    
+    access_token=$(get_access_token)
+    
+    response=$(curl -s -X GET "${API_URL}/${device_id}" \
+        -H "Authorization: Bearer ${access_token}")
+    
+    # Extract powerState from response
+    status=$(echo "$response" | grep -o '"powerState":"[^"]*"' | cut -d'"' -f4)
+    
+    if [ -z "$status" ]; then
+        echo "Unknown"
+    else
+        echo "$status"
+    fi
+}
+
 # Function to control device
 control_device() {
     local device_id=$1
@@ -70,9 +89,35 @@ clear_screen() {
 show_menu() {
     while true; do
         clear_screen
+        
+        # Get current status
+        echo "Fetching device status..."
+        shed_status=$(get_device_status "$LAMP_SHED_ID")
+        table_status=$(get_device_status "$TABLE_LAMP_ID")
+        
+        # Display status icons
+        if [ "$shed_status" == "On" ]; then
+            shed_icon="💡 ON "
+        else
+            shed_icon="⚫ OFF"
+        fi
+        
+        if [ "$table_status" == "On" ]; then
+            table_icon="💡 ON "
+        else
+            table_icon="⚫ OFF"
+        fi
+        
+        clear_screen
         echo "════════════════════════════════════"
         echo "    SINRIC PRO LIGHT CONTROLLER"
         echo "════════════════════════════════════"
+        echo ""
+        echo "  Current Status:"
+        echo "  📍 Lamp Shed:  $shed_icon"
+        echo "  📍 Table Lamp: $table_icon"
+        echo ""
+        echo "────────────────────────────────────"
         echo ""
         echo "  1) Turn Lamp Shed ON"
         echo "  2) Turn Lamp Shed OFF"
@@ -83,10 +128,11 @@ show_menu() {
         echo "  5) Turn ALL Lights ON"
         echo "  6) Turn ALL Lights OFF"
         echo ""
+        echo "  r) Refresh Status"
         echo "  0) Exit"
         echo ""
         echo "════════════════════════════════════"
-        echo -n "Select option [0-6]: "
+        echo -n "Select option [0-6/r]: "
         
         read -n 1 choice
         echo ""
@@ -123,8 +169,13 @@ show_menu() {
                 echo "👋 Goodbye!"
                 exit 0
                 ;;
+            r|R)
+                echo "🔄 Refreshing status..."
+                sleep 1
+                continue
+                ;;
             *)
-                echo "❌ Invalid option. Please select 0-6"
+                echo "❌ Invalid option. Please select 0-6 or r"
                 ;;
         esac
         

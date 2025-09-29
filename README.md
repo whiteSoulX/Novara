@@ -1,9 +1,8 @@
-<img width="814" height="630" alt="image" src="https://github.com/user-attachments/assets/1ee5ddc9-3d98-4ff3-98db-98bf21112231" />
 # 🏠 Sinric Pro Light Controller
 
 A beautiful and interactive terminal-based controller for managing your Sinric Pro smart lights directly from Linux!
 
-![Terminal Screenshot](screenshot.png)
+<img width="814" alt="main-menu" src="https://github.com/user-attachments/assets/1ee5ddc9-3d98-4ff3-98db-98bf21112231" />
 
 ## ✨ Features
 
@@ -16,7 +15,8 @@ A beautiful and interactive terminal-based controller for managing your Sinric P
 
 ## 📸 Screenshots
 
-![Main Menu](screenshot.png)
+<img width="814" alt="main-menu" src="https://github.com/user-attachments/assets/1ee5ddc9-3d98-4ff3-98db-98bf21112231" />
+
 *Interactive menu with real-time status display*
 
 ## 🔧 Prerequisites

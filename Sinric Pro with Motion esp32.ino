@@ -10,14 +10,14 @@
 #include <SinricPro.h>
 #include <SinricProSwitch.h>
 
-#define WIFI_SSID       "YOUR_WIFI_NAME"
-#define WIFI_PASS       "YOUR_WIFI_PASSWORD"
+#define WIFI_SSID     "SONY"
+#define WIFI_PASS     "*******"
+#define APP_KEY       "a7c67fef81cb016e"
+#define APP_SECRET    "e653f9ce-44e5-429a-b161-81ee7ef"
 
-#define APP_KEY         "YOUR_APP_KEY"
-#define APP_SECRET      "YOUR_APP_SECRET"
+#define LAMP1_ID      "68cac6a5b73"   // Lamp Shed
+#define LAMP2_ID      "68cac66fc6e"   // Table Lamp
 
-#define LIGHT1_ID       "YOUR_DEVICE_ID_LIGHT1"   // Lamp Shed
-#define LIGHT2_ID       "YOUR_DEVICE_ID_LIGHT2"   // Table Lamp
 
 // ---------------- Pin Setup -----------------
 #define RELAY_LIGHT1    4     // GPIO4 -> Relay 1 (Lamp Shed)
@@ -27,7 +27,7 @@
 
 // ------------------------------------------------
 #define MOTION_DISTANCE_CM 100   // Detect motion within 1 meter
-#define AUTO_OFF_TIME 120000     // 2 minutes (in milliseconds)
+#define AUTO_OFF_TIME 15000     // 15 sec (in milliseconds)
 
 unsigned long lastMotionTime = 0;
 bool light1On = false;
@@ -57,10 +57,10 @@ long getDistance() {
 
 // ---------- Light Control via Sinric ----------
 bool onPowerState(const String &deviceId, bool &state) {
-  if (deviceId == LIGHT1_ID) {
+  if (deviceId == LAMP1_ID) {
     digitalWrite(RELAY_LIGHT1, state ? LOW : HIGH);
     Serial.printf("Lamp Shed turned %s via Sinric Pro\n", state ? "ON" : "OFF");
-  } else if (deviceId == LIGHT2_ID) {
+  } else if (deviceId == LAMP2_ID) {
     digitalWrite(RELAY_LIGHT2, state ? LOW : HIGH);
     Serial.printf("Table Lamp turned %s via Sinric Pro\n", state ? "ON" : "OFF");
   }
@@ -68,10 +68,10 @@ bool onPowerState(const String &deviceId, bool &state) {
 }
 
 void setupSinric() {
-  SinricProSwitch &lamp1 = SinricPro[LIGHT1_ID];
+  SinricProSwitch &lamp1 = SinricPro[LAMP1_ID];
   lamp1.onPowerState(onPowerState);
 
-  SinricProSwitch &lamp2 = SinricPro[LIGHT2_ID];
+  SinricProSwitch &lamp2 = SinricPro[LAMP2_ID];
   lamp2.onPowerState(onPowerState);
 
   SinricPro.onConnected([] { Serial.println("Connected to Sinric Pro!"); });
